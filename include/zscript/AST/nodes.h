@@ -1,4 +1,4 @@
-#include <iostream>
+#include <iostream> // временно
 #include <string>
 #include <memory>
 #include <unordered_map>
@@ -13,6 +13,7 @@ namespace zst::ast
         virtual int eval() = 0;
         virtual ~INode() = default;
     };
+
 
     struct NumberNode : INode
     {
@@ -48,7 +49,8 @@ namespace zst::ast
         BinaryOpNode(char o, std::unique_ptr<INode> l, std::unique_ptr<INode> r) : op(o), lhs(move(l)), rhs(move(r)) {}
         int eval() override
         {
-            int a = lhs->eval(), b = rhs->eval();
+            int a = lhs->eval();
+            int b = rhs->eval();
             switch (op)
             {
             case '+':
@@ -119,8 +121,7 @@ namespace zst::ast
         WhileNode(std::unique_ptr<INode> c, std::unique_ptr<INode> b) : cond(move(c)), body(move(b)) {}
         int eval() override
         {
-            while (cond->eval())
-                body->eval();
+            while (cond->eval()) body->eval();
             return 0;
         }
     };
@@ -128,12 +129,12 @@ namespace zst::ast
     struct ForNode : INode
     {
         std::unique_ptr<INode> init, cond, step, body;
+
         ForNode(std::unique_ptr<INode> i, std::unique_ptr<INode> c, std::unique_ptr<INode> p, std::unique_ptr<INode> b)
             : init(move(i)), cond(move(c)), step(move(p)), body(move(b)) {}
         int eval() override
         {
-            for (init->eval(); cond->eval(); step->eval())
-                body->eval();
+            for (init->eval(); cond->eval(); step->eval()) body->eval();
             return 0;
         }
     };

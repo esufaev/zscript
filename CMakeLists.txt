@@ -8,6 +8,7 @@ project(
 )
 
 include(FetchContent)
+set(POT_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 
 FetchContent_Declare(
     ParallelOperationsToolkit
@@ -21,13 +22,13 @@ set(Z_HEADERS
     include/${PROJECT_NAME}/AST/nodes.h
 )
 
-add_library(${PROJECT_NAME}_lib INTERFACE)
+add_library(${PROJECT_NAME}_lib INTERFACE ${Z_HEADERS})
 target_include_directories(${PROJECT_NAME}_lib INTERFACE include)
+
+add_executable(${PROJECT_NAME} main.cpp)
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         ${PROJECT_NAME}_lib
-        ParallelOperationsToolkit
+        pot
 )
-
-add_executable(${PROJECT_NAME} main.cpp)
