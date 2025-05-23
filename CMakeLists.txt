@@ -19,7 +19,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(ParallelOperationsToolkit)
 
 set(Z_HEADERS
-    include/${PROJECT_NAME}/AST/nodes.h
+    include/${PROJECT_NAME}/zAST/nodes.h
 )
 
 add_library(${PROJECT_NAME}_lib INTERFACE ${Z_HEADERS})
