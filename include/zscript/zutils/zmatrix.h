@@ -1,11 +1,11 @@
 #pragma once
 #include <vector>
 
-namespace zst::zmatrix {
-
-class zmatrix
+namespace zst::zutils
 {
-    std::vector<double> data{};
-};
+    class zmatrix
+    {
+        std::vector<double> data{};
+    };
 
-} // namespace zmatrix
+} // namespace zst::zutils

@@ -4,49 +4,49 @@
 #include <unordered_map>
 #include <vector>
 
-namespace zst::ast
+namespace zst::zast
 {
-    std::unordered_map<std::string, int> context;
+    std::unordered_map<std::string, int> zcontext;
 
-    struct INode
+    struct zINode
     {
         virtual int eval() = 0;
-        virtual ~INode() = default;
+        virtual ~zINode() = default;
     };
 
 
-    struct NumberNode : INode
+    struct zNumberNode : zINode
     {
         int value;
-        NumberNode(int v) : value(v) {}
+        zNumberNode(int v) : value(v) {}
         int eval() override { return value; }
     };
 
-    struct VarNode : INode
+    struct zVarNode : zINode
     {
         std::string name;
-        VarNode(const std::string &n) : name(n) {}
-        int eval() override { return context[name]; }
+        zVarNode(const std::string &n) : name(n) {}
+        int eval() override { return zcontext[name]; }
     };
 
-    struct AssignNode : INode
+    struct zAssignNode : zINode
     {
         std::string name;
-        std::unique_ptr<INode> expr;
-        AssignNode(const std::string &n, std::unique_ptr<INode> e) : name(n), expr(move(e)) {}
+        std::unique_ptr<zINode> expr;
+        zAssignNode(const std::string &n, std::unique_ptr<zINode> e) : name(n), expr(move(e)) {}
         int eval() override
         {
             int val = expr->eval();
-            context[name] = val;
+            zcontext[name] = val;
             return val;
         }
     };
 
-    struct BinaryOpNode : INode
+    struct zBinaryOpNode : zINode
     {
         char op;
-        std::unique_ptr<INode> lhs, rhs;
-        BinaryOpNode(char o, std::unique_ptr<INode> l, std::unique_ptr<INode> r) : op(o), lhs(move(l)), rhs(move(r)) {}
+        std::unique_ptr<zINode> lhs, rhs;
+        zBinaryOpNode(char o, std::unique_ptr<zINode> l, std::unique_ptr<zINode> r) : op(o), lhs(move(l)), rhs(move(r)) {}
         int eval() override
         {
             int a = lhs->eval();
@@ -72,10 +72,10 @@ namespace zst::ast
         }
     };
 
-    struct PrintNode : INode
+    struct zPrintNode : zINode
     {
-        std::unique_ptr<INode> expr;
-        PrintNode(std::unique_ptr<INode> e) : expr(move(e)) {}
+        std::unique_ptr<zINode> expr;
+        zPrintNode(std::unique_ptr<zINode> e) : expr(move(e)) {}
         int eval() override
         {
             int val = expr->eval();
@@ -84,10 +84,10 @@ namespace zst::ast
         }
     };
 
-    struct BlockNode : INode
+    struct zBlockNode : zINode
     {
-        std::vector<std::unique_ptr<INode>> stmts;
-        void add(std::unique_ptr<INode> stmt)
+        std::vector<std::unique_ptr<zINode>> stmts;
+        void add(std::unique_ptr<zINode> stmt)
         {
             stmts.push_back(move(stmt));
         }
@@ -100,25 +100,23 @@ namespace zst::ast
         }
     };
 
-    struct IfNode : INode
+    struct zIfNode : zINode
     {
-        std::unique_ptr<INode> cond, thenBranch, elseBranch;
-        IfNode(std::unique_ptr<INode> c, std::unique_ptr<INode> t, std::unique_ptr<INode> e = nullptr)
-            : cond(move(c)), thenBranch(move(t)), elseBranch(move(e)) {}
+        std::unique_ptr<zINode> cond, then_branch, else_branch;
+        zIfNode(std::unique_ptr<zINode> c, std::unique_ptr<zINode> t, std::unique_ptr<zINode> e = nullptr)
+            : cond(move(c)), then_branch(move(t)), else_branch(move(e)) {}
         int eval() override
         {
-            if (cond->eval())
-                return thenBranch->eval();
-            else if (elseBranch)
-                return elseBranch->eval();
+            if (cond->eval())     return then_branch->eval();
+            else if (else_branch) return else_branch->eval();
             return 0;
         }
     };
 
-    struct WhileNode : INode
+    struct zWhileNode : zINode
     {
-        std::unique_ptr<INode> cond, body;
-        WhileNode(std::unique_ptr<INode> c, std::unique_ptr<INode> b) : cond(move(c)), body(move(b)) {}
+        std::unique_ptr<zINode> cond, body;
+        zWhileNode(std::unique_ptr<zINode> c, std::unique_ptr<zINode> b) : cond(move(c)), body(move(b)) {}
         int eval() override
         {
             while (cond->eval()) body->eval();
@@ -126,11 +124,11 @@ namespace zst::ast
         }
     };
 
-    struct ForNode : INode
+    struct zForNode : zINode
     {
-        std::unique_ptr<INode> init, cond, step, body;
+        std::unique_ptr<zINode> init, cond, step, body;
 
-        ForNode(std::unique_ptr<INode> i, std::unique_ptr<INode> c, std::unique_ptr<INode> p, std::unique_ptr<INode> b)
+        zForNode(std::unique_ptr<zINode> i, std::unique_ptr<zINode> c, std::unique_ptr<zINode> p, std::unique_ptr<zINode> b)
             : init(move(i)), cond(move(c)), step(move(p)), body(move(b)) {}
         int eval() override
         {
