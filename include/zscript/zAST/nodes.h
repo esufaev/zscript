@@ -1,8 +1,12 @@
+#pragma once
+
 #include <iostream> // временно
 #include <string>
 #include <memory>
 #include <unordered_map>
 #include <vector>
+
+#include "zscript/zparser/ztoken.h"
 
 namespace zst::zast
 {
@@ -44,44 +48,40 @@ namespace zst::zast
 
     struct zBinaryOpNode : zINode
     {
-        char op;
+        ztoken_type op;
         std::unique_ptr<zINode> lhs, rhs;
-        zBinaryOpNode(char o, std::unique_ptr<zINode> l, std::unique_ptr<zINode> r) : op(o), lhs(move(l)), rhs(move(r)) {}
+        zBinaryOpNode(ztoken_type o, std::unique_ptr<zINode> l, std::unique_ptr<zINode> r) : op(o), lhs(move(l)), rhs(move(r)) {}
         int eval() override
         {
             int a = lhs->eval();
             int b = rhs->eval();
             switch (op)
             {
-            case '+':
-                return a + b;
-            case '-':
-                return a - b;
-            case '*':
-                return a * b;
-            case '/':
-                return b / a;
-            case '<':
-                return a < b;
-            case '>':
-                return a > b;
-            case '=':
-                return a == b;
+                case zst::ztoken_type::Plus:         return a + b;
+                case zst::ztoken_type::Minus:        return a - b;
+                case zst::ztoken_type::Mul:          return a * b;
+                case zst::ztoken_type::Div:          return b / a;
+                case zst::ztoken_type::Less:         return a < b;
+                case zst::ztoken_type::Greater:      return a > b;
+                case zst::ztoken_type::Equal:        return a == b;
+                case zst::ztoken_type::Notequal:     return a != b;
+                case zst::ztoken_type::Greaterequal: return a >= b;
+                case zst::ztoken_type::Lessequal:    return a <= b;
             }
             return 0;
         }
     };
 
-    struct zPrintNode : zINode
-    {
-        std::unique_ptr<zINode> expr;
-        zPrintNode(std::unique_ptr<zINode> e) : expr(move(e)) {}
-        int eval() override
-        {
-            int val = expr->eval();
-            std::cout << val << std::endl;
-            return val;
-        }
+    struct zPrintNode :
+                zINode
+                {
+                    std::unique_ptr<zINode> expr;
+                    zPrintNode(std::unique_ptr<zINode> e) : expr(move(e)) {}
+                    int eval() override
+                    {
+                        int val = expr->eval();
+                        return val;
+                    }
     };
 
     struct zBlockNode : zINode
@@ -89,7 +89,7 @@ namespace zst::zast
         std::vector<std::unique_ptr<zINode>> stmts;
         void add(std::unique_ptr<zINode> stmt)
         {
-            stmts.push_back(move(stmt));
+            stmts.push_back(std::move(stmt));
         }
         int eval() override
         {

@@ -2,14 +2,11 @@
 #include <functional>
 #include "pot/utils/time_it.h"
 #include <thread>
+#include "zscript/zparser/zparser.h"
+#include "assert.h"
 
 int main()
 {
-    /*
-        x = 0;
-        for (i = 0; i < 10; i = i + 1)
-            x = x + i;
-    */
-
-    return 0;
+  std::cout << "USE TESTS" << std::endl;
+  return 0;
 }
