@@ -18,7 +18,6 @@ namespace zst::zast
         virtual ~zINode() = default;
     };
 
-
     struct zNumberNode : zINode
     {
         int value;
@@ -72,16 +71,16 @@ namespace zst::zast
         }
     };
 
-    struct zPrintNode :
-                zINode
-                {
-                    std::unique_ptr<zINode> expr;
-                    zPrintNode(std::unique_ptr<zINode> e) : expr(move(e)) {}
-                    int eval() override
-                    {
-                        int val = expr->eval();
-                        return val;
-                    }
+    struct zPrintNode : zINode
+    {
+        std::unique_ptr<zINode> expr;
+        zPrintNode(std::unique_ptr<zINode> e) : expr(move(e)) {}
+        int eval() override
+        {
+            int val = expr->eval();
+            std::cout << val << std::endl;  
+            return val;
+        }
     };
 
     struct zBlockNode : zINode

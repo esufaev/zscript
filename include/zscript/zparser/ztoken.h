@@ -33,6 +33,7 @@ namespace zst
         Not,
         Notequal,
         Function,
+        Print,
         End
     };
 

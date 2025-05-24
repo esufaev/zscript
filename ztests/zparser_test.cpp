@@ -100,3 +100,17 @@ TEST_CASE("FOR TEST")
 
     REQUIRE(zcontext["x"] == 10);
 }
+
+TEST_CASE("PRINT TEST")
+{
+    std::string code = R"(
+        x = 123;
+        print x;
+        print 123333;
+    )";
+
+    zst::zlexer lexer(code);
+    zst::zparser parser(lexer);
+    auto tree = parser.parse();
+    tree->eval();
+}

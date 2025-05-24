@@ -32,6 +32,14 @@ namespace zst
                 throw std::runtime_error("Unexpected token: " + m_current.text);
         }
 
+        std::unique_ptr<zINode> parse_print()
+        {
+            expect(ztoken_type::Print);
+            auto expression = parse_assignment();
+            expect(ztoken_type::Semicolon);
+            return std::make_unique<zPrintNode>(std::move(expression));
+        }
+
         std::unique_ptr<zINode> parse_identifier()
         {
             std::string variable = m_current.text;
@@ -48,6 +56,7 @@ namespace zst
             else if (m_current.type == ztoken_type::If)         { return parse_if();         }
             else if (m_current.type == ztoken_type::While)      { return parse_while();      }
             else if (m_current.type == ztoken_type::For)        { return parse_for();        }
+            else if (m_current.type == ztoken_type::Print)      { return parse_print();      }
             else if (m_current.type == ztoken_type::Identifier) { return parse_identifier(); }
 
             throw std::runtime_error("Unexpected statement: " + m_current.text);
