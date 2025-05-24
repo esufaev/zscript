@@ -1,11 +1,15 @@
 #pragma once
 #include <string>
+#include <variant>
+
+#include "zscript/zutils/zmatrix.h"
 
 namespace zst
 {
     enum class ztoken_type
     {
         Identifier,
+        Rmatrix,
         Number,
         If,
         Else,
@@ -13,8 +17,8 @@ namespace zst
         For,
         LParen,
         RParen,
-        LBracket,
-        RBracket,
+        // LBracket,
+        // RBracket,
         LBrace,
         RBrace,
         Semicolon,
@@ -32,13 +36,14 @@ namespace zst
         Not,
         Notequal,
         Function,
+        Anyof,
+        Print,
         End
     };
 
     struct ztoken
     {
         ztoken_type type;
-        std::string text;
+        std::variant<std::string, zutils::zmatrix> data;
     };
-
 } // namespace zst
