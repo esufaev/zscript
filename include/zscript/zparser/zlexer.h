@@ -25,6 +25,8 @@ namespace zst::zast
       while (isspace(peek()))
         get();
 
+      if (pos >= data.size()) { return {ztoken_type::End, ""}; } // Блять!
+
       if (isalpha(peek()))
       {
         const long long start = pos++; // Так на 1 сравнение меньше
@@ -124,7 +126,7 @@ namespace zst::zast
         }
         return {ztoken_type::Greater, ">"};
       default:
-        return {ztoken_type::End, data.substr(pos, data.size() - pos + 1)};
+        throw std::runtime_error(std::string("Unknown character: ") + c);
       }
     }
   };
