@@ -59,7 +59,7 @@ namespace zst::zast
                 case zst::ztoken_type::Plus:         return a + b;
                 case zst::ztoken_type::Minus:        return a - b;
                 case zst::ztoken_type::Mul:          return a * b;
-                case zst::ztoken_type::Div:          return b / a;
+                case zst::ztoken_type::Div:          return a / b;
                 case zst::ztoken_type::Less:         return a < b;
                 case zst::ztoken_type::Greater:      return a > b;
                 case zst::ztoken_type::Equal:        return a == b;
