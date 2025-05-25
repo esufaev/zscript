@@ -1,5 +1,9 @@
 # ZSCRIPT
-![](https://i.pinimg.com/736x/57/46/cc/5746cc1990e9494da92e964bc48f5ca5.jpg)
+<div id="header" align="center">
+  <a href="https://t.me/italicboyyy">
+    <img src="https://media1.tenor.com/m/6iJZ--a8RZ0AAAAd/%D1%81%D0%B2%D0%BE-zov.gif" width="700"/>
+  </a>
+</div>
 ***
 СЛАВА ИНТЕРПРЕТАТОРУ C++ :pray: :heart: СПАСИБО НАШЕМУ ИНТЕРПРЕТАТОРУ С++:pray::heart:СЛАВА БОГУ ИНТЕРПРЕТАТОРУ С++:muscle::fire:АНГЕЛЯ ХРАНИТЕЛЯ ИНТЕРПРЕТАОРА С++ КАЖДОМУ ИЗ ВАС:muscle::heart: БОЖЕ ХРАНИ ИНТЕРПРЕТАТОР С++:pray::heart: СПАСИБО ВАМ НАШИ НЕРВЫ:muscle::fire: БОЖЕ ХРАНИ ЛЕКСЕР И ПАРСЕР:pray::heart:
 
