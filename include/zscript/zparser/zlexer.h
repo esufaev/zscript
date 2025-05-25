@@ -54,7 +54,7 @@ namespace zst::zast {
                 }
             }
 
-            if (isdouble(peek())) {
+            if (isdigit(peek()) || peek() == '.') {
                 const long long start = pos++;
                 while (isdouble(peek()))
                     get();
@@ -152,7 +152,7 @@ namespace zst::zast {
                 }
             }
 
-            return {matrix_data, cols, rows};
+            return {matrix_data, rows, cols};
         }
 
         [[nodiscard]] static bool isdouble(char c) { return isdigit(c) || c == '.' || c == '-'; }

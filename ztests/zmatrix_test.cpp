@@ -88,15 +88,15 @@ TEST_CASE("Scalars") {
     REQUIRE(sp(0,0)==3);
     REQUIRE(sp(0,1)==4);
     REQUIRE(sp(0,2)==5);
-    auto sm = G - 1.0;
+    auto sm = G - static_cast<zst::zutils::zmatrix>(1.0);
     REQUIRE(sm(0,0)==0);
     REQUIRE(sm(0,1)==1);
     REQUIRE(sm(0,2)==2);
-    auto st = G * 2.0;
+    auto st = G * static_cast<zst::zutils::zmatrix>(2.0);
     REQUIRE(st(0,0)==2);
     REQUIRE(st(0,1)==4);
     REQUIRE(st(0,2)==6);
-    auto sd = G / 2.0;
+    auto sd = G / static_cast<zst::zutils::zmatrix>(2.0);
     REQUIRE(sd(0,0)==0.5);
     REQUIRE(sd(0,1)==1);
     REQUIRE(sd(0,2)==1.5);
@@ -125,11 +125,11 @@ TEST_CASE("Elementwise") {
     REQUIRE( divm(0,1) == 1 );
     REQUIRE( divm(0,2) == 3 );
 
-    auto s_add = zmatrix(2.0) + 3.0;
+    auto s_add = zmatrix(2.0) + static_cast<zst::zutils::zmatrix>(3.0);
     REQUIRE( s_add(0,0) == 5.0 );
 
     zmatrix V1(std::vector<double>{5,6,7},1,3);
-    auto v_mul = V1 * 2.0;
+    auto v_mul = V1 * static_cast<zst::zutils::zmatrix>(2.0);
     REQUIRE( v_mul(0,0) == 10 );
     REQUIRE( v_mul(0,1) == 12 );
     REQUIRE( v_mul(0,2) == 14 );
