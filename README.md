@@ -1,7 +1,13 @@
 # INTERPRETER
 ![](https://i.pinimg.com/736x/57/46/cc/5746cc1990e9494da92e964bc48f5ca5.jpg)
 ***
-СЛАВА ИНТЕРПРЕТАТОРУ C++:pray::heart:СПАСИБО НАШЕМУ ИНТЕРПРЕТАТОРУ С++:pray::heart:СЛАВА БОГУ ИНТЕРПРЕТАТОРУ С++:muscle::fire:АНГЕЛЯ ХРАНИТЕЛЯ ИНТЕРПРЕТАОРА С++ КАЖДОМУ ИЗ ВАС:muscle::heart: БОЖЕ ХРАНИ ИНТЕРПРЕТАТОР С++:pray::heart: СПАСИБО ВАМ НАШИ НЕРВЫ:muscle::fire: БОЖЕ ХРАНИ ЛЕКСЕР И ПАРСЕР:pray::heart:
+СЛАВА ИНТЕРПРЕТАТОРУ C++ :pray: :heart:  
+СПАСИБО НАШЕМУ ИНТЕРПРЕТАТОРУ C++ :pray: :heart:  
+СЛАВА БОГУ ИНТЕРПРЕТАТОРУ C++ :muscle: :fire:  
+АНГЕЛЯ ХРАНИТЕЛЯ ИНТЕРПРЕТАТОРА C++ КАЖДОМУ ИЗ ВАС :muscle: :heart:  
+БОЖЕ ХРАНИ ИНТЕРПРЕТАТОР C++ :pray: :heart:  
+СПАСИБО ВАМ НАШИ НЕРВЫ :muscle: :fire:  
+БОЖЕ ХРАНИ ЛЕКСЕР И ПАРСЕР :pray: :heart:
 ***
 В данном репозитории содержится реализация программы интерпретатора, написанная на языке программирования C++.
 #### Возможности программы
@@ -17,14 +23,14 @@
 Пример ввода на консоль:
 ```
 zov = [3, -33, 333];
-        for (goida = 0; goida <= 100; goida = goida + 3)
-        {
-            if (zov == [9, 39, 339]) { print goida; }
-            else { while (goida < 1000) { zov = zov + [5, 5, 5]; goida = goida + 1; } }
-        }
-        print zov;
-        print zov;
-        print zov;
+for (goida = 0; goida <= 100; goida = goida + 3)
+{
+    if (zov == [9, 39, 339]) { print goida; }
+    else { while (goida < 1000) { zov = zov + [5, 5, 5]; goida = goida + 1; } }
+}
+print zov;
+print zov;
+print zov;
 ```
 Результат работы интерпретатора:
 ```
