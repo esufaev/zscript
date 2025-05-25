@@ -1,187 +1,183 @@
-// ReSharper disable CppDFAConstantConditions
 #pragma once
 #include <vector>
 #include <array>
 #include <string>
 #include <stdexcept>
-#include <sstream>
-#include <ios>
 
-namespace zst::zutils {
-    class zmatrix {
+namespace zst::zutils
+{
+    class zmatrix
+    {
         std::vector<double> data;
         unsigned long long rows, cols;
 
     public:
         zmatrix(const std::vector<double> &d, unsigned long long r, unsigned long long c)
-            : data(d), rows(r), cols(c) {
+            : data(d), rows(r), cols(c)
+        {
         }
 
         zmatrix(unsigned long long r, unsigned long long c)
-            : rows(r), cols(c) {
-            data.reserve(r * c);
+            : rows(r), cols(c)
+        {
+            data.resize(r * c);
         }
 
-        zmatrix() : data{0.0}, rows(1), cols(1) {
+        zmatrix() : data{0.0}, rows(1), cols(1)
+        {
         }
 
-        zmatrix(double v) : data{v}, rows(1), cols(1) {
+        zmatrix(double v) : data{v}, rows(1), cols(1)
+        {
         }
 
-        [[nodiscard]] std::array<unsigned long long, 2> dimensions() const {
+        [[nodiscard]] std::array<unsigned long long, 2> dimensions() const
+        {
             return {rows, cols};
         }
 
         // доступ по индексу
-        double &operator()(unsigned long long i, unsigned long long j) {
+        double &operator()(unsigned long long i, unsigned long long j)
+        {
             return data[i * cols + j];
         }
 
-        double operator()(unsigned long long i, unsigned long long j) const {
+        double operator()(unsigned long long i, unsigned long long j) const
+        {
             return data[i * cols + j];
         }
 
-        [[nodiscard]] zmatrix any_of() const {
+        [[nodiscard]] zmatrix any_of() const
+        {
             bool res = false;
-            for (int i = 0; i < data.size() && !res; i++) {
+            for (int i = 0; i < data.size() && !res; i++)
+            {
                 res = res || (data[i] >= 1);
             }
 
             return {static_cast<double>(res)};
         }
 
-        [[nodiscard]] zmatrix all_of() const {
+        [[nodiscard]] zmatrix all_of() const
+        {
             bool res = true;
-            for (int i = 0; i < data.size() && res; i++) {
+            for (int i = 0; i < data.size() && res; i++)
+            {
                 res = res && (data[i] >= 1);
             }
 
             return {static_cast<double>(res)};
         }
 
-        [[nodiscard]] zmatrix operator==(const zmatrix &B) const {
-            zmatrix C(rows, cols);
-            for (std::size_t i = 0; i < data.size(); ++i)
-                C.data[i] = static_cast<double>(data[i] == B.data[i]);
-            return C;
+        // Матричные операции
+        [[nodiscard]] zmatrix operator==(const zmatrix &B) const
+        {
+            return bin_matrix(B, std::equal_to<double>{});
         }
 
-        [[nodiscard]] zmatrix operator!=(const zmatrix &B) const {
-            zmatrix C(rows, cols);
-            for (std::size_t i = 0; i < data.size(); ++i)
-                C.data[i] = static_cast<double>(data[i] != B.data[i]);
-            return C;
+        [[nodiscard]] zmatrix operator!=(const zmatrix &B) const
+        {
+            return bin_matrix(B, std::not_equal_to<double>{});
         }
 
-        [[nodiscard]] zmatrix operator<=(const zmatrix &B) const {
-            zmatrix C(rows, cols);
-            for (std::size_t i = 0; i < data.size(); ++i)
-                C.data[i] = static_cast<double>(data[i] <= B.data[i]);
-            return C;
+        [[nodiscard]] zmatrix operator<=(const zmatrix &B) const
+        {
+            return bin_matrix(B, std::less_equal<double>{});
         }
 
-        [[nodiscard]] zmatrix operator>=(const zmatrix &B) const {
-            zmatrix C(rows, cols);
-            for (std::size_t i = 0; i < data.size(); ++i)
-                C.data[i] = static_cast<double>(data[i] >= B.data[i]);
-            return C;
+        [[nodiscard]] zmatrix operator>=(const zmatrix &B) const
+        {
+            return bin_matrix(B, std::greater_equal<double>{});
         }
 
-        [[nodiscard]] zmatrix operator<(const zmatrix &B) const {
-            zmatrix C(rows, cols);
-            for (std::size_t i = 0; i < data.size(); ++i)
-                C.data[i] = static_cast<double>(data[i] < B.data[i]);
-            return C;
+        [[nodiscard]] zmatrix operator<(const zmatrix &B) const
+        {
+            return bin_matrix(B, std::less<double>{});
         }
 
-        [[nodiscard]] zmatrix operator>(const zmatrix &B) const {
-            zmatrix C(rows, cols);
-            for (std::size_t i = 0; i < data.size(); ++i)
-                C.data[i] = static_cast<double>(data[i] > B.data[i]);
-            return C;
+        [[nodiscard]] zmatrix operator>(const zmatrix &B) const
+        {
+            return bin_matrix(B, std::greater<double>{});
         }
 
-        [[nodiscard]] zmatrix operator+(const zmatrix &B) const {
-            zmatrix C(rows, cols);
-            for (std::size_t i = 0; i < data.size(); ++i)
-                C.data[i] = data[i] + B.data[i];
-            return C;
+        [[nodiscard]] zmatrix operator+(const zmatrix &B) const
+        {
+            return bin_matrix(B, std::plus<double>{});
         }
 
-        [[nodiscard]] zmatrix operator-(const zmatrix &B) const {
-            zmatrix C(rows, cols);
-            for (std::size_t i = 0; i < data.size(); ++i)
-                C.data[i] = data[i] - B.data[i];
-            return C;
+        [[nodiscard]] zmatrix operator-(const zmatrix &B) const
+        {
+            return bin_matrix(B, std::minus<double>{});
         }
 
-        [[nodiscard]] zmatrix operator*(const zmatrix &B) const {
-            zmatrix C(rows, cols);
-            for (std::size_t i = 0; i < data.size(); ++i)
-                C.data[i] = data[i] * B.data[i];
-            return C;
+        [[nodiscard]] zmatrix operator*(const zmatrix &B) const
+        {
+            return bin_matrix(B, std::multiplies<double>{});
         }
 
-        [[nodiscard]] zmatrix operator/(const zmatrix &B) const {
-            zmatrix C(rows, cols);
-            for (std::size_t i = 0; i < data.size(); ++i)
-                C.data[i] = data[i] / B.data[i];
-            return C;
+        [[nodiscard]] zmatrix operator/(const zmatrix &B) const
+        {
+            return bin_matrix(B, std::divides<double>{});
         }
 
-        // скалярные операции
-        [[nodiscard]] zmatrix operator+(double s) const {
-            zmatrix C(data, rows, cols);
-            for (auto &x: C.data) x += s;
-            return C;
-        }
-
-        [[nodiscard]] zmatrix operator-(double s) const {
-            zmatrix C(data, rows, cols);
-            for (auto &x: C.data) x -= s;
-            return C;
-        }
-
-        [[nodiscard]] zmatrix operator*(double s) const {
-            zmatrix C(data, rows, cols);
-            for (auto &x: C.data) x *= s;
-            return C;
-        }
-
-        [[nodiscard]] zmatrix operator/(double s) const {
-            zmatrix C(data, rows, cols);
-            for (auto &x: C.data) x /= s;
-            return C;
-        }
-
-        [[nodiscard]] zmatrix dot(const zmatrix &B) const {
+        [[nodiscard]] zmatrix dot(const zmatrix &B) const
+        {
             if (cols != B.rows)
                 throw std::invalid_argument("Incompatible dimensions for dot product");
             zmatrix result(std::vector<double>(rows * B.cols, 0.0), rows, B.cols);
-            for (unsigned long long i = 0; i < rows; ++i) {
-                for (unsigned long long k = 0; k < cols; ++k) {
+            for (unsigned long long i = 0; i < rows; ++i)
+            {
+                for (unsigned long long k = 0; k < cols; ++k)
+                {
                     double val = operator()(i, k);
-                    for (unsigned long long j = 0; j < B.cols; ++j) {
+                    for (unsigned long long j = 0; j < B.cols; ++j)
+                    {
                         result(i, j) += val * B(k, j);
                     }
                 }
             }
+
             return result;
         }
 
-        [[nodiscard]] std::string print() const {
-            std::ostringstream out;
-            out.precision(6);
-            out << std::fixed;
-            for (unsigned long long i = 0; i < rows; ++i) {
-                out << "[ ";
-                for (unsigned long long j = 0; j < cols; ++j) {
-                    out << (*this)(i, j);
-                    if (j + 1 < cols) out << ", ";
+        void print() const
+        {
+            for (unsigned long long i = 0; i < cols; ++i)
+            {
+                printf(" [ ");
+                for (unsigned long long j = 0; j < rows; ++j)
+                {
+                    printf("%.2f ", operator()(i, j));
+                    if (j + 1 < cols)
+                        printf(", ");
                 }
-                out << " ]\n";
+                printf("]\n");
             }
-            return out.str();
+        }
+
+        operator bool() const { return all_of()(0, 0); }
+
+    private:
+        template <typename Op>
+        [[nodiscard]] zmatrix bin_matrix(const zmatrix &B, Op op) const
+        {
+            zmatrix C(rows, cols);
+            if (dimensions() == B.dimensions())
+            {
+                for (std::size_t i = 0; i < data.size(); ++i)
+                    C.data[i] = op(data[i], B.data[i]);
+                return C;
+            }
+            else if (B.dimensions()[0] == 1 && B.dimensions()[1] == 1)
+            {
+                for (std::size_t i = 0; i < data.size(); ++i)
+                    C.data[i] = op(data[i], B(0, 0));
+                return C;
+            }
+            else
+            {
+                throw std::invalid_argument("Incompatible dimensions for elementwise operation");
+            }
         }
     };
 } // namespace zst::zutils

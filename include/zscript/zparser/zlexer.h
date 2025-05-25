@@ -29,7 +29,7 @@ namespace zst::zast {
             if (isalpha(peek())) {
                 const long long start = pos++;
 
-                while (isalnum(peek()))
+                while (isalnum(peek()) || peek() == '_')
                     get();
 
                 const std::string substr = data.substr(start, pos - start);
@@ -155,8 +155,6 @@ namespace zst::zast {
             return {matrix_data, cols, rows};
         }
 
-        [[nodiscard]] static bool isdouble(char c) {
-            return isdigit(c) || c == '.';
-        }
+        [[nodiscard]] static bool isdouble(char c) { return isdigit(c) || c == '.' || c == '-'; }
     };
 }

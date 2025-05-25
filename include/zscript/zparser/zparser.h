@@ -91,9 +91,9 @@ namespace zst
                 expect(ztoken_type::RParen);
                 return expr;
             }
-            else if (m_current.type == ztoken_type::Number)
+            else if (m_current.type == ztoken_type::Rmatrix || m_current.type == ztoken_type::Number)
             {
-                int value = std::stoi(m_current.text());
+                zst::zutils::zmatrix value = m_current.zmatrix();
                 next();
                 return std::make_unique<zNumberNode>(value);
             }
@@ -103,8 +103,24 @@ namespace zst
                 next();
                 return std::make_unique<zVarNode>(name);
             }
+            else if (m_current.type == ztoken_type::Allof)
+            {
+                next();
+                expect(ztoken_type::LParen);
+                auto expr = parse_assignment();
+                expect(ztoken_type::RParen);
+                return std::make_unique<zAllofNode>(std::move(expr));
+            }
+            else if (m_current.type == ztoken_type::Anyof)
+            {
+                next();
+                expect(ztoken_type::LParen);
+                auto expr = parse_assignment();
+                expect(ztoken_type::RParen);
+                return std::make_unique<zAnyofNode>(std::move(expr));
+            }
 
-            throw std::runtime_error("Unexpected left expression");
+            throw std::runtime_error("Unexpected left expression: " + m_current.text());
         }
 
         std::unique_ptr<zINode> parse_block()

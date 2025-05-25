@@ -84,7 +84,7 @@ TEST_CASE("Comparisons") {
 
 TEST_CASE("Scalars") {
     zmatrix G(std::vector<double>{1, 2, 3}, 1, 3);
-    auto sp = G + 2.0;
+    auto sp = G + static_cast<zst::zutils::zmatrix>(2.0);
     REQUIRE(sp(0,0)==3);
     REQUIRE(sp(0,1)==4);
     REQUIRE(sp(0,2)==5);

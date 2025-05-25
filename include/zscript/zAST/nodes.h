@@ -1,35 +1,35 @@
 #pragma once
 
-#include <iostream> // временно
 #include <string>
 #include <memory>
 #include <unordered_map>
 #include <vector>
 
 #include "zscript/zparser/ztoken.h"
+#include "zscript/zutils/zmatrix.h"
 
 namespace zst::zast
 {
-    std::unordered_map<std::string, int> zcontext;
+    std::unordered_map<std::string, zst::zutils::zmatrix> zcontext;
 
     struct zINode
     {
-        virtual int eval() = 0;
+        virtual zst::zutils::zmatrix eval() = 0;
         virtual ~zINode() = default;
     };
 
     struct zNumberNode : zINode
     {
-        int value;
-        zNumberNode(int v) : value(v) {}
-        int eval() override { return value; }
+        zst::zutils::zmatrix value;
+        zNumberNode(zst::zutils::zmatrix v) : value(v) {}
+        zst::zutils::zmatrix eval() override { return value; }
     };
 
     struct zVarNode : zINode
     {
         std::string name;
         zVarNode(const std::string &n) : name(n) {}
-        int eval() override { return zcontext[name]; }
+        zst::zutils::zmatrix eval() override { return zcontext[name]; }
     };
 
     struct zAssignNode : zINode
@@ -37,9 +37,9 @@ namespace zst::zast
         std::string name;
         std::unique_ptr<zINode> expr;
         zAssignNode(const std::string &n, std::unique_ptr<zINode> e) : name(n), expr(move(e)) {}
-        int eval() override
+        zst::zutils::zmatrix eval() override
         {
-            int val = expr->eval();
+            zst::zutils::zmatrix val = expr->eval();
             zcontext[name] = val;
             return val;
         }
@@ -50,10 +50,10 @@ namespace zst::zast
         ztoken_type op;
         std::unique_ptr<zINode> lhs, rhs;
         zBinaryOpNode(ztoken_type o, std::unique_ptr<zINode> l, std::unique_ptr<zINode> r) : op(o), lhs(move(l)), rhs(move(r)) {}
-        int eval() override
+        zst::zutils::zmatrix eval() override
         {
-            int a = lhs->eval();
-            int b = rhs->eval();
+            zst::zutils::zmatrix a = lhs->eval();
+            zst::zutils::zmatrix b = rhs->eval();
             switch (op)
             {
                 case zst::ztoken_type::Plus:         return a + b;
@@ -66,6 +66,7 @@ namespace zst::zast
                 case zst::ztoken_type::Notequal:     return a != b;
                 case zst::ztoken_type::Greaterequal: return a >= b;
                 case zst::ztoken_type::Lessequal:    return a <= b;
+                case zst::ztoken_type::Matmul:       return a.dot(b);
             }
             return 0;
         }
@@ -75,10 +76,10 @@ namespace zst::zast
     {
         std::unique_ptr<zINode> expr;
         zPrintNode(std::unique_ptr<zINode> e) : expr(move(e)) {}
-        int eval() override
+        zst::zutils::zmatrix eval() override
         {
-            int val = expr->eval();
-            std::cout << val << std::endl;  
+            zst::zutils::zmatrix val = expr->eval();
+            val.print();
             return val;
         }
     };
@@ -90,11 +91,10 @@ namespace zst::zast
         {
             stmts.push_back(std::move(stmt));
         }
-        int eval() override
+        zst::zutils::zmatrix eval() override
         {
-            int result = 0;
-            for (auto &stmt : stmts)
-                result = stmt->eval();
+            zst::zutils::zmatrix result = 0;
+            for (auto &stmt : stmts) result = stmt->eval();
             return result;
         }
     };
@@ -104,7 +104,7 @@ namespace zst::zast
         std::unique_ptr<zINode> cond, then_branch, else_branch;
         zIfNode(std::unique_ptr<zINode> c, std::unique_ptr<zINode> t, std::unique_ptr<zINode> e = nullptr)
             : cond(move(c)), then_branch(move(t)), else_branch(move(e)) {}
-        int eval() override
+        zst::zutils::zmatrix eval() override
         {
             if (cond->eval())     return then_branch->eval();
             else if (else_branch) return else_branch->eval();
@@ -116,7 +116,7 @@ namespace zst::zast
     {
         std::unique_ptr<zINode> cond, body;
         zWhileNode(std::unique_ptr<zINode> c, std::unique_ptr<zINode> b) : cond(move(c)), body(move(b)) {}
-        int eval() override
+        zst::zutils::zmatrix eval() override
         {
             while (cond->eval()) body->eval();
             return 0;
@@ -129,10 +129,32 @@ namespace zst::zast
 
         zForNode(std::unique_ptr<zINode> i, std::unique_ptr<zINode> c, std::unique_ptr<zINode> p, std::unique_ptr<zINode> b)
             : init(move(i)), cond(move(c)), step(move(p)), body(move(b)) {}
-        int eval() override
+        zst::zutils::zmatrix eval() override
         {
             for (init->eval(); cond->eval(); step->eval()) body->eval();
             return 0;
+        }
+    };
+
+    struct zAllofNode : zINode
+    {
+        std::unique_ptr<zINode> expr;    
+        zAllofNode(std::unique_ptr<zINode> e) : expr(move(e)) {}
+        zst::zutils::zmatrix eval() override
+        {
+            zst::zutils::zmatrix result = expr->eval().all_of();
+            return result;
+        }
+    };
+
+    struct zAnyofNode : zINode
+    {
+        std::unique_ptr<zINode> expr;
+        zAnyofNode(std::unique_ptr<zINode> e) : expr(move(e)) {}
+        zst::zutils::zmatrix eval() override
+        {
+            zst::zutils::zmatrix result = expr->eval().any_of();
+            return result;
         }
     };
 }

@@ -60,9 +60,9 @@ if (ZSCRIPT_BUILD_TEST)
     include(Catch)
 
     set(TEST_SOURCES
-            # ztests/znodes_test.cpp
-#            ztests/zparser_test.cpp
-            ztests/zmatrix_test.cpp
+        #       ztests/znodes_test.cpp
+                ztests/zparser_test.cpp
+        #       ztests/zmatrix_test.cpp
     )
 
     add_executable(tests ${TEST_SOURCES})
