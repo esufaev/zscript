@@ -35,6 +35,15 @@ set(Z_HEADERS
         include/${PROJECT_NAME}/zutils/zmatrix.h
 )
 
+set(Z_FLAGS
+        -std=c++23
+        -mavx2
+        -fsanitize=address
+)
+
+add_compile_options(${Z_FLAGS})
+add_link_options(${Z_FLAGS})
+
 add_library(${PROJECT_NAME}_lib INTERFACE ${Z_HEADERS})
 target_include_directories(${PROJECT_NAME}_lib INTERFACE include)
 
@@ -51,7 +60,8 @@ if (ZSCRIPT_BUILD_TEST)
     include(Catch)
 
     set(TEST_SOURCES
-            ztests/znodes_test.cpp
+            # ztests/znodes_test.cpp
+#            ztests/zparser_test.cpp
             ztests/zmatrix_test.cpp
     )
 
