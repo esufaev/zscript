@@ -1,4 +1,4 @@
-# INTERPRETER
+# ZSCRIPT
 ![](https://i.pinimg.com/736x/57/46/cc/5746cc1990e9494da92e964bc48f5ca5.jpg)
 ***
 СЛАВА ИНТЕРПРЕТАТОРУ C++ :pray: :heart:  
