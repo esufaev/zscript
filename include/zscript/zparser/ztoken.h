@@ -17,8 +17,6 @@ namespace zst
         For,
         LParen,
         RParen,
-        // LBracket,
-        // RBracket,
         LBrace,
         RBrace,
         Semicolon,
@@ -37,6 +35,7 @@ namespace zst
         Notequal,
         Function,
         Anyof,
+        Allof,
         Print,
         End
     };
@@ -45,5 +44,13 @@ namespace zst
     {
         ztoken_type type;
         std::variant<std::string, zutils::zmatrix> data;
+
+        std::string text() {
+            return std::get<std::string>(data);
+        }
+
+        zutils::zmatrix zmatrix() {
+            return std::get<zutils::zmatrix>(data);
+        }
     };
 } // namespace zst

@@ -24,8 +24,10 @@ namespace zst::zast {
             while (isspace(peek()))
                 get();
 
+            if (pos >= data.size()) [[unlikely]] { return {ztoken_type::End, ""}; }
+
             if (isalpha(peek())) {
-                const long long start = pos++; // Так на 1 сравнение меньше
+                const long long start = pos++;
 
                 while (isalnum(peek()))
                     get();
@@ -43,6 +45,8 @@ namespace zst::zast {
                     return {ztoken_type::Function, substr};
                 } else if (substr == "any_of") {
                     return {ztoken_type::Anyof, substr};
+                } else if (substr == "all_of") {
+                    return {ztoken_type::Allof, substr};
                 } else if (substr == "print") {
                     return {ztoken_type::Print, substr};
                 } else {
@@ -50,12 +54,12 @@ namespace zst::zast {
                 }
             }
 
-            if (isdigit(peek())) {
+            if (isdouble(peek())) {
                 const long long start = pos++;
                 while (isdouble(peek()))
                     get();
 
-                return {ztoken_type::Number, data.substr(start, pos - start)};
+                return {ztoken_type::Number, zutils::zmatrix(std::stod(data.substr(start, pos - start)))};
             }
 
             const char c = get();
@@ -64,8 +68,6 @@ namespace zst::zast {
                     return {ztoken_type::Semicolon, ";"};
                 case '[':
                     return {ztoken_type::Rmatrix, construct_matrix()};
-                // case ']':
-                //   return {ztoken_type::RBracket, "]"};
                 case '{':
                     return {ztoken_type::LBrace, "{"};
                 case '}':
