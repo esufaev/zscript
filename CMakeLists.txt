@@ -11,21 +11,13 @@ option(ZSCRIPT_BUILD_TEST "Enable unit testing" ON)
 
 include(FetchContent)
 
-set(POT_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-
-FetchContent_Declare(
-        ParallelOperationsToolkit
-        GIT_REPOSITORY https://github.com/esufaev/Parallel-Operations-Toolkit.git
-        GIT_TAG master
-)
-
 FetchContent_Declare(
         Catch2
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
         GIT_TAG devel
 )
 
-FetchContent_MakeAvailable(ParallelOperationsToolkit Catch2)
+FetchContent_MakeAvailable(Catch2)
 
 set(Z_HEADERS
         include/${PROJECT_NAME}/zAST/nodes.h
@@ -33,12 +25,14 @@ set(Z_HEADERS
         include/${PROJECT_NAME}/zparser/zparser.h
         include/${PROJECT_NAME}/zparser/ztoken.h
         include/${PROJECT_NAME}/zutils/zmatrix.h
+        include/${PROJECT_NAME}/zparser/zinterpreter.h
 )
 
 set(Z_FLAGS
         -std=c++23
         -mavx2
-        -fsanitize=address
+        -O2
+        # -fsanitize=address
 )
 
 add_compile_options(${Z_FLAGS})
@@ -51,7 +45,6 @@ add_executable(${PROJECT_NAME} main.cpp)
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
         ${PROJECT_NAME}_lib
-        pot
 )
 
 if (ZSCRIPT_BUILD_TEST)
